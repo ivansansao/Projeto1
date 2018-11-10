@@ -1,0 +1,37 @@
+package main
+
+import (
+	_ "github.com/go-sql-driver/mysql"
+	"database/sql"
+	"fmt"
+	"os"
+)
+
+func main() {
+	
+	arg := os.Args[1]
+	
+	db, err := sql.Open("mysql", "sances:laranjauva@/"+arg+"?charset=utf8")
+	checkErr(err)
+
+	// query
+	rows, err := db.Query("SELECT codigo_pes, nomraz_pes FROM pessoa")
+	checkErr(err)
+
+	for rows.Next() {
+		var codigo_pes int
+		var nomraz_pes string
+		err = rows.Scan(&codigo_pes, &nomraz_pes)
+		checkErr(err)			
+		fmt.Println(codigo_pes," - ",nomraz_pes)            
+	}
+
+	db.Close()
+
+}
+
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
